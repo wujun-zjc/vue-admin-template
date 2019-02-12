@@ -34,7 +34,8 @@ export const constantRouterMap = [
     hidden: true,
     children: [{
       path: 'dashboard',
-      component: () => import('@/views/dashboard/index')
+      component: () => import('@/views/dashboard/index'),
+      meta: { title: 'Dashboard', icon: 'dashboard', noCache: true }
     }]
   }
 ]
@@ -141,7 +142,7 @@ export const asyncRouterMap = [
       {
         path: 'menu2',
         component: () => import('@/views/nested/menu2/index'),
-        meta: { title: 'menu2' }
+        meta: { title: 'Menu2' }
       }
     ]
   },
@@ -152,7 +153,7 @@ export const asyncRouterMap = [
     children: [
       {
         path: 'https://panjiachen.github.io/vue-element-admin-site/#/',
-        meta: { title: 'External Link', icon: 'link' }
+        meta: { title: 'ExternalLink', icon: 'link' }
       }
     ]
   },
