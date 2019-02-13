@@ -12,39 +12,45 @@
         <el-option v-for="item in charges" :key="item" :label="item" :value="item"/>
       </el-select>
       <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查询</el-button>
-      <el-button class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">新增</el-button>
-      <el-button class="filter-item" type="primary" icon="el-icon-edit" @click="handleReset">重置</el-button>
+      <el-button class="filter-item" icon="el-icon-refresh" @click="handleReset">重置</el-button>
     </div>
 
-    <el-table v-loading="listLoading" :data="list" border fit highlight-current-row stripe style="width: 100%;">
-      <el-table-column type="index" width="50" align="center"></el-table-column>
-      <el-table-column label="基地编号" prop="id" align="center" width="90px"></el-table-column>
-      <el-table-column label="基地名称" prop="name" align="center" min-width="100px"></el-table-column>
-      <el-table-column label="基地地址" prop="adress" align="center" min-width="150px"></el-table-column>
-      <el-table-column label="所属组织" prop="organization" align="center" min-width="150px"></el-table-column>
-      <el-table-column label="负责人" prop="charge" align="center" width="100px"></el-table-column>
-      <el-table-column label="基地描述" prop="description" align="center" min-width="150px"></el-table-column>
-      <el-table-column label="基地照片" align="center" width="150px">
-        <template slot-scope="scope">
-          <img :src="scope.row.src" alt="" style="width: 100px;">
-        </template>
-      </el-table-column>
-      <el-table-column label="操作人" prop="operator" align="center" width="100px"></el-table-column>
-      <el-table-column label="操作时间" prop="time" align="center" width="150px">
-        <!-- <template slot-scope="scope">
-          <span>{{ scope.row.time | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
-        </template> -->
-      </el-table-column>
-      <el-table-column label="操作" prop="operate" align="center" width="220px" fixed="right">
-        <template slot-scope="scope">
-          <el-button v-if="scope.row.operate.indexOf('edit') != -1" size="mini" type="primary" @click="handleUpdate(scope.row)">编辑</el-button>
-          <el-button v-if="scope.row.operate.indexOf('view') != -1" size="mini" type="success" @click="handleView(scope.row)">查看</el-button>
-          <el-button v-if="scope.row.operate.indexOf('delete') != -1" size="mini" type="danger" @click="handleDelete(scope.row.id)">删除</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
+    <div class="table-container">
+      <div class="table-operation">
+        <el-button class="table-operation-button" size="mini" icon="el-icon-edit" @click="handleCreate">新增</el-button>
+      </div>
+      <el-table v-loading="listLoading" :data="list" border fit highlight-current-row stripe style="width: 100%;">
+        <el-table-column type="index" width="50" align="center"></el-table-column>
+        <el-table-column label="基地编号" prop="id" align="center" width="90px"></el-table-column>
+        <el-table-column label="基地名称" prop="name" align="center" min-width="100px"></el-table-column>
+        <el-table-column label="基地地址" prop="adress" align="center" min-width="150px"></el-table-column>
+        <el-table-column label="所属组织" prop="organization" align="center" min-width="150px"></el-table-column>
+        <el-table-column label="负责人" prop="charge" align="center" width="100px"></el-table-column>
+        <el-table-column label="基地描述" prop="description" align="center" min-width="150px"></el-table-column>
+        <el-table-column label="基地照片" align="center" width="150px">
+          <template slot-scope="scope">
+            <img :src="scope.row.src" alt="" style="width: 100px;">
+          </template>
+        </el-table-column>
+        <el-table-column label="操作人" prop="operator" align="center" width="100px"></el-table-column>
+        <el-table-column label="操作时间" prop="time" align="center" width="150px">
+          <!-- <template slot-scope="scope">
+            <span>{{ scope.row.time | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+          </template> -->
+        </el-table-column>
+        <el-table-column label="操作" prop="operate" align="center" width="220px" fixed="right">
+          <template slot-scope="scope">
+            <el-button v-if="scope.row.operate.indexOf('edit') != -1" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
+            <el-button v-if="scope.row.operate.indexOf('view') != -1" size="mini" @click="handleView(scope.row)">查看</el-button>
+            <el-button v-if="scope.row.operate.indexOf('delete') != -1" size="mini" type="danger" @click="handleDelete(scope.row.id)">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
 
-    <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
+    <div class="pagination-wraper">
+      <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
+    </div>
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form ref="dataForm" :rules="rules" :model="formData" :disabled="dialogFormDisabled" label-position="left" label-width="90px" style="width: 400px; margin-left:50px;">
@@ -336,12 +342,23 @@ export default {
       })
     },
     handleDelete(id) {
-      this.$notify({
-        title: '成功',
-        message: '删除成功',
-        type: 'success',
-        duration: 2000
-      })
+      this.$confirm('确认要删除此基地信息吗?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$notify({
+          title: '成功',
+          message: '删除成功',
+          type: 'success',
+          duration: 2000
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        });          
+      });
       // const index = this.list.indexOf(row)
       // this.list.splice(index, 1)
     }
