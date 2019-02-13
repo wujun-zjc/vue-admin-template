@@ -33,6 +33,12 @@
         <lang-select class="international right-menu-item"/>
       </div>
 
+      <div class="color-picker-wraper">
+        <el-tooltip :content="$t('navbar.theme')" effect="dark" placement="bottom">
+          <theme-picker class="theme-switch right-menu-item"/>
+        </el-tooltip>
+      </div>
+
       <div class="sub-system-nav">
         <router-link
           v-for="subSystem in subSystemList"
@@ -61,6 +67,7 @@ import { mapGetters } from 'vuex'
 import { Navbar, Sidebar, AppMain, TagsView } from './components'
 import ResizeMixin from './mixin/ResizeHandler'
 import LangSelect from '@/components/LangSelect'
+import ThemePicker from '@/components/ThemePicker'
 
 export default {
   name: 'Layout',
@@ -69,7 +76,8 @@ export default {
     Sidebar,
     AppMain,
     TagsView,
-    LangSelect
+    LangSelect,
+    ThemePicker
   },
   mixins: [ResizeMixin],
   data() {
@@ -206,6 +214,10 @@ export default {
       }
     }
     .lang-select-wraper {
+      float: right;
+      margin-right: 20px;
+    }
+    .color-picker-wraper {
       float: right;
       margin-right: 20px;
     }

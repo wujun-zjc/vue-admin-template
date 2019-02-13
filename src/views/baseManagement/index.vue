@@ -79,7 +79,7 @@
           <el-date-picker v-model="formData.time" type="datetime"/>
         </el-form-item>
         <el-form-item label="基地照片">
-          <el-upload drag action="" multiple="false" class="upload-demo">
+          <el-upload drag action="" :multiple="false" class="upload-demo">
             <i class="el-icon-upload"></i>
             <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
             <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>
@@ -143,11 +143,11 @@ export default {
         id: '',
         name: '',
         adress: '',
-        organization: [],
-        charge: [],
-        description: [],
+        organization: '',
+        charge: '',
+        description: '',
         src: '',
-        operator: [],
+        operator: '',
         time: ''
       },
       rules: {
@@ -273,11 +273,11 @@ export default {
         id: '',
         name: '',
         adress: '',
-        organization: [],
-        charge: [],
-        description: [],
+        organization: '',
+        charge: '',
+        description: '',
         src: '',
-        operator: [],
+        operator: '',
         time: ''
       }
     },
