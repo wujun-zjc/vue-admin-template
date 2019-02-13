@@ -64,7 +64,8 @@ export default {
     clipboardDemo: 'Clipboard',
     i18n: 'I18n',
     'ExternalLink': 'External Link',
-    Test: 'Test'
+    Test: 'Test',
+    BaseManagement: 'BaseManagement'
   },
   header: {
     platformName: 'Cloud Platform Name',

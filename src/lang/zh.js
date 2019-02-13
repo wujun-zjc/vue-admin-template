@@ -64,7 +64,8 @@ export default {
     clipboardDemo: 'Clipboard',
     i18n: '国际化',
     'ExternalLink': '外链',
-    Test: '测试'
+    Test: '测试',
+    BaseManagement: '基地管理'
   },
   header: {
     platformName: '云平台名',

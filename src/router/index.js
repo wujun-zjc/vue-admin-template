@@ -90,6 +90,19 @@ export const asyncRouterMap = [
   },
 
   {
+    path: '/baseManagement',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'BaseManagement',
+        component: () => import('@/views/baseManagement/index'),
+        meta: { title: 'BaseManagement', icon: 'baseManagement' }
+      }
+    ]
+  },
+
+  {
     path: '/nested',
     component: Layout,
     redirect: '/nested/menu1',
