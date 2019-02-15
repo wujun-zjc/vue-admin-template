@@ -208,16 +208,40 @@ code {
   margin-bottom: 20px;
   border-radius: 5px;
   background-color: #fff;
-  .table-operation{
+
+  .table-operation {
     margin-bottom: 10px;
+  }
+
+  .el-table {
+    .el-button {
+      margin: 0;
+    }
   }
 }
 
 // 分页
-.pagination-wraper{
+.pagination-wraper {
   margin: 0;
   border-radius: 5px;
   background-color: #fff;
+}
+
+// 树
+.tree-card {
+  width: 300px;
+  float: left;
+  margin-right: 20px;
+}
+
+.table-card {
+  .filter-container {
+    padding: 0;
+
+    .el-radio+.el-radio {
+      margin-left: 10px;
+    }
+  }
 }
 
 //refine vue-multiselect plugin

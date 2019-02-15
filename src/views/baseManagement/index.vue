@@ -77,12 +77,10 @@
           <el-input :autosize="{ minRows: 2, maxRows: 4}" v-model="formData.description" type="textarea"/>
         </el-form-item>
         <el-form-item label="操作人" prop="operator">
-          <el-select v-model="formData.operator" class="filter-item" placeholder="">
-            <el-option v-for="item in operators" :key="item" :label="item" :value="item"/>
-          </el-select>
+          <el-input v-model="formData.operator" disabled/>
         </el-form-item>
         <el-form-item label="操作时间" prop="time">
-          <el-date-picker v-model="formData.time" type="datetime"/>
+          <el-date-picker v-model="formData.time" type="datetime" disabled/>
         </el-form-item>
         <el-form-item label="基地照片">
           <el-upload drag action="" :multiple="false" class="upload-demo">
@@ -104,6 +102,7 @@
 <script>
 import { parseTime } from '@/utils'
 import Pagination from '@/components/Pagination'
+import { getToken } from '@/utils/auth'
 
 export default {
   name: 'BaseManagement',
@@ -162,8 +161,7 @@ export default {
         adress: [{ required: true, message: '基地地址是必填项', trigger: 'blur' }],
         organization: [{ required: true, message: '所属组织是必填项', trigger: 'change' }],
         charge: [{ required: true, message: '负责人是必填项', trigger: 'change' }],
-        description: [{ required: true, message: '基地描述是必填项', trigger: 'blur' }],
-        operator: [{ required: true, message: '操作人是必填项', trigger: 'change' }]
+        description: [{ required: true, message: '基地描述是必填项', trigger: 'blur' }]
       },
       operators: [
         'operator-1',
@@ -224,6 +222,8 @@ export default {
       this.dialogStatus = 'add'
       this.dialogFormVisible = true
       this.dialogFormDisabled = false
+      this.formData.time = new Date()
+      this.formData.operator = getToken()
       this.$nextTick(() => {
         this.$refs['dataForm'].clearValidate()
       })
@@ -234,6 +234,8 @@ export default {
       this.dialogStatus = 'edit'
       this.dialogFormVisible = true
       this.dialogFormDisabled = false
+      this.formData.time = new Date()
+      this.formData.operator = getToken()
       this.$nextTick(() => {
         this.$refs['dataForm'].clearValidate()
       })

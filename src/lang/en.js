@@ -65,7 +65,9 @@ export default {
     i18n: 'I18n',
     'ExternalLink': 'External Link',
     Test: 'Test',
-    BaseManagement: 'BaseManagement'
+    BaseManagement: 'BaseManagement',
+    equipmentType: 'EquipmentType',
+    PeopleManagement: 'PeopleManagement'
   },
   header: {
     platformName: 'Cloud Platform Name',

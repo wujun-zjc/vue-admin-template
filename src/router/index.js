@@ -88,6 +88,18 @@ export const asyncRouterMap = [
       }
     ]
   },
+  {
+    path: '/equipmentType',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'EquipmentType',
+        component: () => import('@/views/equipmentType/index'),
+        meta: { title: 'EquipmentType', icon: 'test' }
+      }
+    ]
+  },
 
   {
     path: '/baseManagement',
@@ -98,6 +110,19 @@ export const asyncRouterMap = [
         name: 'BaseManagement',
         component: () => import('@/views/baseManagement/index'),
         meta: { title: 'BaseManagement', icon: 'baseManagement' }
+      }
+    ]
+  },
+
+  {
+    path: '/peopleManagement',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'PeopleManagement',
+        component: () => import('@/views/peopleManagement/index'),
+        meta: { title: 'PeopleManagement', icon: 'peopleManagement', noCache: true }
       }
     ]
   },

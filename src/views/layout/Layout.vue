@@ -126,7 +126,7 @@ export default {
       this.subSystemList = [
         { title: this.$t('subSystem.home'), path: '/' },
         { title: this.$t('subSystem.intelligentmonitoring'), path: '/' },
-        { title: this.$t('subSystem.algorithmmodel'), path: '/' },
+        // { title: this.$t('subSystem.algorithmmodel'), path: '/' },
         { title: this.$t('subSystem.precisionplanting'), path: '/' },
         { title: this.$t('subSystem.expertplatform'), path: '/' },
         { title: this.$t('subSystem.traceabilitymanagement'), path: '/' },
@@ -157,7 +157,7 @@ export default {
     .logo-wraper {
       // min-width: 160px;
       // margin-right: 10%;
-      margin-right: 50px;
+      margin-right: 200px;
       float: left;
       .logo-name {
         overflow: hidden;

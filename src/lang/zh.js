@@ -65,7 +65,9 @@ export default {
     i18n: '国际化',
     'ExternalLink': '外链',
     Test: '测试',
-    BaseManagement: '基地管理'
+    BaseManagement: '基地管理',
+    EquipmentType: '设备类型',
+    PeopleManagement: '人员管理'
   },
   header: {
     platformName: '云平台名',
