@@ -1,6 +1,15 @@
 export default {
   route: {
     Dashboard: '首页',
+    EquipmentType:"设备类型",
+    DeviceManagement:"设备管理",
+    CropSpecies:"作物种类",
+    PinManagement:"品种型号",
+    Chemicals:"农药种类",
+    Fertilizer:"肥料种类",
+    LogManagement: '日志管理',
+    CropDiseases:'作物病害',
+    Pest:"作物虫害",
     introduction: '简述',
     documentation: '文档',
     guide: '引导页',
@@ -66,7 +75,6 @@ export default {
     'ExternalLink': '外链',
     Test: '测试',
     BaseManagement: '基地管理',
-    EquipmentType: '设备类型',
     PeopleManagement: '人员管理'
   },
   header: {

@@ -1,6 +1,15 @@
 export default {
   route: {
     dashboard: 'Dashboard',
+    equipmentType:"EquipmentType",
+    deviceManagement:"DeviceManagement",
+    cropSpecies:"CropSpecies",
+    pinManagement:"PinManagement",
+    chemicals:"Chemicals",
+    fertilizer:"Fertilizer",
+    LogManagement: 'LogManagement',
+    pest:"Pest",
+    cropDiseases:"CropDiseases",
     introduction: 'Introduction',
     documentation: 'Documentation',
     guide: 'Guide',
@@ -66,7 +75,6 @@ export default {
     'ExternalLink': 'External Link',
     Test: 'Test',
     BaseManagement: 'BaseManagement',
-    equipmentType: 'EquipmentType',
     PeopleManagement: 'PeopleManagement'
   },
   header: {

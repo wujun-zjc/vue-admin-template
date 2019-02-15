@@ -100,7 +100,104 @@ export const asyncRouterMap = [
       }
     ]
   },
-
+  {
+    path: '/deviceManagement',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'DeviceManagement',
+        component: () => import('@/views/deviceManagement/index'),
+        meta: { title: 'DeviceManagement', icon: 'test' }
+      }
+    ]
+  },
+  {
+    path: '/cropSpecies',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'CropSpecies',
+        component: () => import('@/views/cropSpecies/index'),
+        meta: { title: 'CropSpecies', icon: 'test' }
+      }
+    ]
+  },
+  {
+    path: '/cropDiseases',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'CropDiseases',
+        component: () => import('@/views/cropDiseases/index'),
+        meta: { title: 'CropDiseases', icon: 'test' }
+      }
+    ]
+  },
+  {
+    path: '/pest',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'Pest',
+        component: () => import('@/views/pest/index'),
+        meta: { title: 'Pest', icon: 'test' }
+      }
+    ]
+  },
+  {
+    path: '/pinManagement',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'PinManagement',
+        component: () => import('@/views/pinManagement/index'),
+        meta: { title: 'PinManagement', icon: 'test' }
+      }
+    ]
+  },
+  
+  {
+    path: '/logManagement',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'LogManagement',
+        component: () => import('@/views/logManagement/index'),
+        meta: { title: 'LogManagement', icon: 'test' }
+      }
+    ]
+  },
+  {
+    path: '/fertilizer',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'fertilizer',
+        component: () => import('@/views/fertilizer/index'),
+        meta: { title: 'Fertilizer', icon: 'test' }
+      }
+    ]
+  },
+ 
+  {
+    path: '/chemicals',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'Chemicals',
+        component: () => import('@/views/chemicals/index'),
+        meta: { title: 'Chemicals', icon: 'test' }
+      }
+    ]
+  },
   {
     path: '/baseManagement',
     component: Layout,

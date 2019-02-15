@@ -2,23 +2,34 @@
   <div class="app-container">
     <!-- 条件筛选 -->
     <div class="filter-container">
-      <el-input
-        v-model="listQuery.number"
-        style="width:200px;"
-        class="filter-item"
-        @keyup.enter.native="handleFilter"
-        placeholder="设备类型编号"
-      ></el-input>
-      <el-input
-        placeholder="设备类型"
+      <el-select
+        placeholder="作物种类"
         v-model="listQuery.type"
+        clearable
+        style="width: 200px"
+        class="filter-item"
+      >
+        <el-option v-for="item in type" :key="item" :label="item" :value="item"/>
+      </el-select>
+      <el-select
+        placeholder="品种型号"
+        v-model="listQuery.cropType"
+        clearable
+        style="width: 200px"
+        class="filter-item"
+      >
+        <el-option v-for="item in cropType" :key="item" :label="item" :value="item"/>
+      </el-select>
+      <el-input
+        placeholder="来源"
+        v-model="listQuery.source"
         style="width:200px;"
         class="filter-item"
         @keyup.enter.native="handleFilter"
       ></el-input>
       <el-input
-        placeholder="备注"
-        v-model="listQuery.remarks"
+        placeholder="品种描述"
+        v-model="listQuery.description"
         style="width:200px;"
         class="filter-item"
         @keyup.enter.native="handleFilter"
@@ -26,7 +37,7 @@
       <el-button icon="el-icon-search" class="filter-item" type="primary" @click="handleFilter">搜索</el-button>
       <el-button icon="el-icon-refresh" class="filter-item" @click="handleReset">重置</el-button>
     </div>
-    <!-- 表格展示 -->
+    <!-- 列表展示 -->
     <div class="table-container">
       <div class="table-operation">
         <el-button
@@ -45,17 +56,17 @@
         highlight-current-row
         style="width: 100%"
       >
-        <el-table-column prop="number" label="编号" align="center" width="60"></el-table-column>
-        <el-table-column prop="equipmentNumber" label="设备类型编号" align="center" width="120"></el-table-column>
-        <el-table-column prop="equipmentType" align="center" label="设备类型" width="140"></el-table-column>
-        <el-table-column prop="remarks" label="备注" align="center" width="200"></el-table-column>
+        <el-table-column type="index" label="编号" align="center" width="60"></el-table-column>
+        <el-table-column prop="cropType" align="center" label="品种型号" width="140"></el-table-column>
+        <el-table-column prop="souce" align="center" label="来源" width="140"></el-table-column>
+        <el-table-column prop="description" label="描述" align="center" width="280"></el-table-column>
         <el-table-column prop="Operator" label="操作人" align="center" width="140"></el-table-column>
-        <el-table-column label="操作时间" prop="OperatorDate" align="center" width="150px">
+        <el-table-column label="操作时间" prop="OperatorDate" align="center" width="140px">
           <!-- <template slot-scope="scope">
-                  <span>{{ scope.row.time | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+                            <span>{{ scope.row.time | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
           </template>-->
         </el-table-column>
-        <el-table-column prop="operate" align="center" label="操作" fixed="right">
+        <el-table-column prop="operate" align="center" label="操作" min-width="220px" fixed="right">
           <template slot-scope="scope">
             <el-button
               v-if="scope.row.operate.indexOf('edit') != -1"
@@ -77,7 +88,6 @@
         </el-table-column>
       </el-table>
     </div>
-    <!-- 分页 -->
     <div class="pagination-wraper">
       <pagination
         v-show="total>0"
@@ -87,7 +97,7 @@
         @pagination="getList"
       />
     </div>
-    <!-- 编辑 -->
+    <!-- 新增页面 -->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form
         ref="dataForm"
@@ -96,30 +106,44 @@
         :disabled="dialogFormDisabled"
         label-position="left"
         label-width="90px"
-        style="width: 400px; margin-left:50px;"
+        style="width: 550px; margin-left:40px;"
       >
-        <el-form-item label="设备类型" prop="equipmentType">
+        <el-form-item label="作物种类" prop="type">
+          <el-select
+            :disabled="true"
+            style="width: 400px;"
+            v-model="listQuery.type"
+            class="filter-item"
+            placeholder="请选择作物种类"
+          >
+            <el-option v-for="item in type" :key="item" :label="item" :value="item"/>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="品种型号" prop="cropType">
           <el-input
             :autosize="{ minRows: 2, maxRows: 4}"
-            v-model="formData.equipmentType"
+            v-model="formData.cropType"
             type="text"
+            style="width: 400px;"
+            placeholder="请输入品种类型名称"
           />
         </el-form-item>
-        <el-form-item label="设备编号" prop="equipmentNumber">
+        <el-form-item label="来源" prop="souce">
           <el-input
             :autosize="{ minRows: 2, maxRows: 4}"
-            v-model="formData.equipmentNumber"
+            v-model="formData.souce"
             type="text"
+            style="width: 400px;"
+            placeholder="请输入来源地"
           />
         </el-form-item>
-        <el-form-item label="操作人" prop="Operator">
-          <el-input :autosize="{ minRows: 2, maxRows: 4}" v-model="formData.Operator" type="text"/>
-        </el-form-item>
-        <el-form-item label="备注" prop="remarks">
+        <el-form-item label="品种描述" prop="description" style="width:550px">
           <el-input
-            :autosize="{ minRows: 8, maxRows: 16}"
-            v-model="formData.remarks"
+            style="width: 400px;"
+            :autosize="{ minRows: 8, maxRows: 18}"
+            v-model="formData.description"
             type="textarea"
+            placeholder="请输入品种描述"
           />
         </el-form-item>
       </el-form>
@@ -134,43 +158,43 @@
 import { parseTime } from "@/utils";
 import Pagination from "@/components/Pagination";
 export default {
-  name: "EquipmentType",
+  name: "pinManagement",
   components: { Pagination },
   data() {
     return {
-      total: 0,
-      listLoading: false,
+      //用于增删改弹框标题
+      textMap: {
+        add: "新增品种型号",
+        view: "查看品种型号",
+        edit: "编辑品种型号"
+      },
+      formData: {
+        // type: "",
+        cropType: "",
+        souce: "",
+        description: ""
+      },
       dialogStatus: "",
-      //顯示與不顯示彈框
       dialogFormVisible: false,
       dialogFormDisabled: false,
-      textMap: {
-        add: "新增",
-        view: "查看",
-        edit: "编辑"
-      },
+      listLoading: false,
+      total: 0,
+      list: [],
       listQuery: {
         page: 1,
-        //每页的数量
         limit: 10,
-        //设备编号
-        number: undefined,
-        //设备类型
-        type: undefined,
-        //备注
-        remarks: undefined
+        type: "",
+        cropType: undefined,
+        source: undefined,
+        description: undefined
       },
-
-      list: [],
-      formData: {
-        equipmentType: "",
-        remarks: ""
-      },
+      type: ["小麦", "水稻", "玉米"],
+      cropType: ["type-1", "type-2", "type-3", "type-4", "type-5"],
       rules: {
-        //规则
-        equipmentType: [
-          { required: true, message: "设备类型是必填项", trigger: "blur" }
-        ]
+        cropType: [
+          { required: true, message: "品种型号是必填项", trigger: "blur" }
+        ],
+        type: [{ required: true, message: "作物种类是必填项", trigger: "blur" }]
       }
     };
   },
@@ -178,6 +202,21 @@ export default {
     this.getList();
   },
   methods: {
+    //筛选
+    handleFilter() {
+      this.listQuery.page = 1;
+      //   this.getList();
+    },
+    //重置
+    handleReset() {
+      this.listQuery = {
+        page: 1,
+        limit: 10,
+        cropType: undefined,
+        source: undefined,
+        description: undefined
+      };
+    },
     //列表展示
     getList() {
       // this.listLoading = true
@@ -197,19 +236,17 @@ export default {
         if (this.listQuery.page == 1) {
           this.list = [
             {
-              number: 1,
-              equipmentNumber: "SB0001",
-              equipmentType: "王小虎",
-              remarks: "2016-05-02",
+              cropType: "SB0001",
+              souce: "王小虎",
+              description: "2016-05-02",
               Operator: "张三",
               OperatorDate: "2016-05-02",
               operate: ["edit", "view", "delete"]
             },
             {
-              number: 2,
-              equipmentNumber: "SB0001",
-              equipmentType: "王小虎",
-              remarks: "2016-05-02",
+              cropType: "SB0001",
+              souce: "王小虎",
+              description: "2016-05-02",
               Operator: "张三",
               OperatorDate: "2016-05-02",
               operate: ["edit", "view", "delete"]
@@ -217,11 +254,6 @@ export default {
           ];
         }
       }, 1.5 * 1000);
-    },
-    //搜索
-    handleFilter() {
-      this.listQuery.page = 1;
-      this.getList();
     },
     //新增
     handleCreate() {
@@ -235,6 +267,15 @@ export default {
         //移除表单项的校验结果
         this.$refs["dataForm"].clearValidate();
       });
+    },
+    //重置表单
+    resetForm() {
+      this.formData = {
+        type: "",
+        cropType: "",
+        souce: "",
+        description: ""
+      };
     },
     //编辑
     handleUpdate(row) {
@@ -284,24 +325,12 @@ export default {
       //  const index = this.list.indexOf(row)
       // this.list.splice(index, 1)
     },
-    //重置
-    handleReset() {
-      this.listQuery = {
-        page: 1,
-        limit: 10,
-        number: undefined,
-        type: undefined,
-        remarks: undefined
-      };
-    },
     //确认提交
     handleComfirm() {
       switch (this.dialogStatus) {
-        //添加
         case "add":
           this.createData();
           break;
-        //编辑
         case "edit":
           this.updateData();
           break;
@@ -310,17 +339,20 @@ export default {
           break;
       }
     },
-    //重置表单
-    resetForm() {
-      this.formData = {
-        type: "",
-        description: ""
-      };
-    },
     createData() {
       this.$refs["dataForm"].validate(valid => {
-        //validate()对整个表单进行校验
         if (valid) {
+          // this.temp.author = 'vue-element-admin'
+          // createArticle(this.temp).then(() => {
+          //   this.list.unshift(this.temp)
+          //   this.dialogFormVisible = false
+          //   this.$notify({
+          //     title: '成功',
+          //     message: '创建成功',
+          //     type: 'success',
+          //     duration: 2000
+          //   })
+          // })
           this.dialogFormVisible = false;
           this.$notify({
             title: "成功",
@@ -333,8 +365,24 @@ export default {
     },
     updateData() {
       this.$refs["dataForm"].validate(valid => {
-        //validate()对整个表单进行校验
         if (valid) {
+          // const tempData = Object.assign({}, this.temp)
+          // updateArticle(tempData).then(() => {
+          //   for (const v of this.list) {
+          //     if (v.id === this.temp.id) {
+          //       const index = this.list.indexOf(v)
+          //       this.list.splice(index, 1, this.temp)
+          //       break
+          //     }
+          //   }
+          //   this.dialogFormVisible = false
+          //   this.$notify({
+          //     title: '成功',
+          //     message: '更新成功',
+          //     type: 'success',
+          //     duration: 2000
+          //   })
+          // })
           this.dialogFormVisible = false;
           this.$notify({
             title: "成功",
@@ -350,5 +398,4 @@ export default {
 </script>
 <style scoped>
 </style>
-
 

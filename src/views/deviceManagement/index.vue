@@ -3,30 +3,43 @@
     <!-- 条件筛选 -->
     <div class="filter-container">
       <el-input
+        placeholder="设备类型编号"
         v-model="listQuery.number"
         style="width:200px;"
         class="filter-item"
         @keyup.enter.native="handleFilter"
-        placeholder="设备类型编号"
       ></el-input>
-      <el-input
+      <el-select
         placeholder="设备类型"
         v-model="listQuery.type"
-        style="width:200px;"
+        clearable
+        style="width: 200px"
         class="filter-item"
-        @keyup.enter.native="handleFilter"
-      ></el-input>
-      <el-input
-        placeholder="备注"
-        v-model="listQuery.remarks"
-        style="width:200px;"
+      >
+        <el-option v-for="item in type" :key="item" :label="item" :value="item"/>
+      </el-select>
+      <el-select
+        placeholder="基地名称"
+        v-model="listQuery.name"
+        clearable
+        style="width: 200px"
         class="filter-item"
-        @keyup.enter.native="handleFilter"
-      ></el-input>
+      >
+        <el-option v-for="item in name" :key="item" :label="item" :value="item"/>
+      </el-select>
+      <el-select
+        placeholder="地快编号"
+        v-model="listQuery.numbers"
+        clearable
+        style="width: 200px"
+        class="filter-item"
+      >
+        <el-option v-for="item in numbers" :key="item" :label="item" :value="item"/>
+      </el-select>
       <el-button icon="el-icon-search" class="filter-item" type="primary" @click="handleFilter">搜索</el-button>
       <el-button icon="el-icon-refresh" class="filter-item" @click="handleReset">重置</el-button>
     </div>
-    <!-- 表格展示 -->
+    <!-- 列表展示 -->
     <div class="table-container">
       <div class="table-operation">
         <el-button
@@ -45,17 +58,22 @@
         highlight-current-row
         style="width: 100%"
       >
-        <el-table-column prop="number" label="编号" align="center" width="60"></el-table-column>
-        <el-table-column prop="equipmentNumber" label="设备类型编号" align="center" width="120"></el-table-column>
-        <el-table-column prop="equipmentType" align="center" label="设备类型" width="140"></el-table-column>
+        <el-table-column type="index" label="编号" align="center" width="60"></el-table-column>
+        <el-table-column prop="number" label="设备类型编号" align="center" width="120"></el-table-column>
+        <el-table-column prop="type" align="center" label="设备类型" width="140"></el-table-column>
+        <el-table-column prop="name" align="center" label="基地名称" width="140"></el-table-column>
+        <el-table-column prop="numbers" align="center" label="地块编号" width="140"></el-table-column>
+        <el-table-column prop="parameters" align="center" label="传感器参数" width="140"></el-table-column>
+        <el-table-column prop="acquisition" align="center" label="采集频率" width="80"></el-table-column>
+        <el-table-column prop="manufacturer" align="center" label="设备厂家" width="160"></el-table-column>
         <el-table-column prop="remarks" label="备注" align="center" width="200"></el-table-column>
         <el-table-column prop="Operator" label="操作人" align="center" width="140"></el-table-column>
         <el-table-column label="操作时间" prop="OperatorDate" align="center" width="150px">
           <!-- <template slot-scope="scope">
-                  <span>{{ scope.row.time | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+                            <span>{{ scope.row.time | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
           </template>-->
         </el-table-column>
-        <el-table-column prop="operate" align="center" label="操作" fixed="right">
+        <el-table-column prop="operate" align="center" label="操作" min-width="220px" fixed="right">
           <template slot-scope="scope">
             <el-button
               v-if="scope.row.operate.indexOf('edit') != -1"
@@ -77,7 +95,6 @@
         </el-table-column>
       </el-table>
     </div>
-    <!-- 分页 -->
     <div class="pagination-wraper">
       <pagination
         v-show="total>0"
@@ -87,7 +104,7 @@
         @pagination="getList"
       />
     </div>
-    <!-- 编辑 -->
+    <!-- 新增 -->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form
         ref="dataForm"
@@ -96,31 +113,56 @@
         :disabled="dialogFormDisabled"
         label-position="left"
         label-width="90px"
-        style="width: 400px; margin-left:50px;"
+        style="width: 550px; margin-left:40px;"
       >
-        <el-form-item label="设备类型" prop="equipmentType">
+        <el-form-item label="设备类型" prop="type">
+          <el-select
+            style="width: 500px;"
+            v-model="formData.type"
+            class="filter-item"
+            placeholder="请选择设备类型"
+          >
+            <el-option v-for="item in type" :key="item" :label="item" :value="item"/>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="设备厂家" prop="manufacturer">
           <el-input
             :autosize="{ minRows: 2, maxRows: 4}"
-            v-model="formData.equipmentType"
+            v-model="formData.manufacturer"
             type="text"
+            style="width: 500px;"
           />
         </el-form-item>
-        <el-form-item label="设备编号" prop="equipmentNumber">
+        <el-form-item label="基地名称" prop="name">
+          <el-select
+            style="width: 500px;"
+            v-model="formData.name"
+            class="filter-item"
+            placeholder="请选择基地"
+          >
+            <el-option v-for="item in name" :key="item" :label="item" :value="item"/>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="地块编号" prop="numbers">
+          <el-select
+            style="width: 500px;"
+            v-model="formData.numbers"
+            class="filter-item"
+            placeholder="请选择地块编号"
+          >
+            <el-option v-for="item in numbers" :key="item" :label="item" :value="item"/>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="采集频率" prop="acquisition" style="width:550px">
           <el-input
+            style="width:200px"
             :autosize="{ minRows: 2, maxRows: 4}"
-            v-model="formData.equipmentNumber"
+            v-model="formData.acquisition"
             type="text"
           />
-        </el-form-item>
-        <el-form-item label="操作人" prop="Operator">
-          <el-input :autosize="{ minRows: 2, maxRows: 4}" v-model="formData.Operator" type="text"/>
-        </el-form-item>
-        <el-form-item label="备注" prop="remarks">
-          <el-input
-            :autosize="{ minRows: 8, maxRows: 16}"
-            v-model="formData.remarks"
-            type="textarea"
-          />
+          <el-radio style="width:50px" v-model="radio" label="1">秒/次</el-radio>
+          <el-radio tyle="width:50px" v-model="radio" label="2">分钟/次</el-radio>
+          <el-radio tyle="width:50px" v-model="radio" label="3">时/次</el-radio>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -134,42 +176,49 @@
 import { parseTime } from "@/utils";
 import Pagination from "@/components/Pagination";
 export default {
-  name: "EquipmentType",
+  name: "EquipmentManagement",
   components: { Pagination },
   data() {
     return {
-      total: 0,
-      listLoading: false,
+      radio: "",
+      //用于增删改弹框标题
+      textMap: {
+        add: "新增设备",
+        view: "查看",
+        edit: "编辑设备"
+      },
       dialogStatus: "",
-      //顯示與不顯示彈框
       dialogFormVisible: false,
       dialogFormDisabled: false,
-      textMap: {
-        add: "新增",
-        view: "查看",
-        edit: "编辑"
+      listLoading: false,
+      formData: {
+        type: "",
+        manufacturer: "",
+        name: "",
+        numbers: "",
+        acquisition: ""
       },
+      list: [],
+      total: 0,
       listQuery: {
         page: 1,
-        //每页的数量
         limit: 10,
-        //设备编号
+        //设备类型编号
         number: undefined,
-        //设备类型
-        type: undefined,
-        //备注
-        remarks: undefined
+        //地块编号
+        numbers: undefined,
+        name: undefined,
+        type: undefined
       },
-
-      list: [],
-      formData: {
-        equipmentType: "",
-        remarks: ""
-      },
+      type: ["type-1", "type-2", "type-3", "type-4", "type-5"],
+      name: ["name-1", "name-2", "name-3", "name-4", "name-5"],
+      numbers: ["number-1", "number-2", "number-3", "number-4", "number-5"],
       rules: {
-        //规则
-        equipmentType: [
+        type: [
           { required: true, message: "设备类型是必填项", trigger: "blur" }
+        ],
+        manufacturer: [
+          { required: true, message: "设备厂家是必填项", trigger: "blur" }
         ]
       }
     };
@@ -178,6 +227,22 @@ export default {
     this.getList();
   },
   methods: {
+    //筛选
+    handleFilter() {
+      this.listQuery.page = 1;
+      this.getList();
+    },
+    //重置
+    handleReset() {
+      this.listQuery = {
+        page: 1,
+        limit: 10,
+        number: undefined,
+        numbers: undefined,
+        name: undefined,
+        type: undefined
+      };
+    },
     //列表展示
     getList() {
       // this.listLoading = true
@@ -197,19 +262,27 @@ export default {
         if (this.listQuery.page == 1) {
           this.list = [
             {
-              number: 1,
-              equipmentNumber: "SB0001",
-              equipmentType: "王小虎",
-              remarks: "2016-05-02",
+              number: "SB0001",
+              type: "王小虎",
+              name: "2016-05-02",
+              numbers: "张三",
+              parameters: "SB0001",
+              acquisition: "王小虎",
+              manufacturer: "2016-05-02",
+              remarks: "张三",
               Operator: "张三",
               OperatorDate: "2016-05-02",
               operate: ["edit", "view", "delete"]
             },
             {
-              number: 2,
-              equipmentNumber: "SB0001",
-              equipmentType: "王小虎",
-              remarks: "2016-05-02",
+              number: "SB0001",
+              type: "王小虎",
+              name: "2016-05-02",
+              numbers: "张三",
+              parameters: "SB0001",
+              acquisition: "王小虎",
+              manufacturer: "2016-05-02",
+              remarks: "张三",
               Operator: "张三",
               OperatorDate: "2016-05-02",
               operate: ["edit", "view", "delete"]
@@ -217,11 +290,6 @@ export default {
           ];
         }
       }, 1.5 * 1000);
-    },
-    //搜索
-    handleFilter() {
-      this.listQuery.page = 1;
-      this.getList();
     },
     //新增
     handleCreate() {
@@ -235,6 +303,16 @@ export default {
         //移除表单项的校验结果
         this.$refs["dataForm"].clearValidate();
       });
+    },
+    //重置表单
+    resetForm() {
+      this.formData = {
+        equipmentType: "",
+        source: "",
+        names: "",
+        baseNumbers: "",
+        frequency: ""
+      };
     },
     //编辑
     handleUpdate(row) {
@@ -284,24 +362,12 @@ export default {
       //  const index = this.list.indexOf(row)
       // this.list.splice(index, 1)
     },
-    //重置
-    handleReset() {
-      this.listQuery = {
-        page: 1,
-        limit: 10,
-        number: undefined,
-        type: undefined,
-        remarks: undefined
-      };
-    },
     //确认提交
     handleComfirm() {
       switch (this.dialogStatus) {
-        //添加
         case "add":
           this.createData();
           break;
-        //编辑
         case "edit":
           this.updateData();
           break;
@@ -310,17 +376,20 @@ export default {
           break;
       }
     },
-    //重置表单
-    resetForm() {
-      this.formData = {
-        type: "",
-        description: ""
-      };
-    },
     createData() {
       this.$refs["dataForm"].validate(valid => {
-        //validate()对整个表单进行校验
         if (valid) {
+          // this.temp.author = 'vue-element-admin'
+          // createArticle(this.temp).then(() => {
+          //   this.list.unshift(this.temp)
+          //   this.dialogFormVisible = false
+          //   this.$notify({
+          //     title: '成功',
+          //     message: '创建成功',
+          //     type: 'success',
+          //     duration: 2000
+          //   })
+          // })
           this.dialogFormVisible = false;
           this.$notify({
             title: "成功",
@@ -333,8 +402,24 @@ export default {
     },
     updateData() {
       this.$refs["dataForm"].validate(valid => {
-        //validate()对整个表单进行校验
         if (valid) {
+          // const tempData = Object.assign({}, this.temp)
+          // updateArticle(tempData).then(() => {
+          //   for (const v of this.list) {
+          //     if (v.id === this.temp.id) {
+          //       const index = this.list.indexOf(v)
+          //       this.list.splice(index, 1, this.temp)
+          //       break
+          //     }
+          //   }
+          //   this.dialogFormVisible = false
+          //   this.$notify({
+          //     title: '成功',
+          //     message: '更新成功',
+          //     type: 'success',
+          //     duration: 2000
+          //   })
+          // })
           this.dialogFormVisible = false;
           this.$notify({
             title: "成功",
@@ -350,5 +435,4 @@ export default {
 </script>
 <style scoped>
 </style>
-
 
