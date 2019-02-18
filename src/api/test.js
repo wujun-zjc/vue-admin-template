@@ -1,4 +1,4 @@
-import request from '@/utils/request-test'
+import request from '@/utils/request'
 
 export function testReq(name) {
   return request({

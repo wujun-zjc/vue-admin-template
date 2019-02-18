@@ -220,6 +220,7 @@ export default {
     },
     //编辑
     handleUpdate(row) {
+      console.log(row)
       //可以为已有的对象赋予多个新属性
       this.formData = Object.assign({}, row);
       //彈框的標題是编辑
@@ -244,6 +245,7 @@ export default {
     },
     //删除
     handleDelete(id) {
+        console.log(id)
       this.$confirm("确认要删除此条信息么？", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",

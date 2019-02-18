@@ -149,6 +149,42 @@ export const asyncRouterMap = [
     ]
   },
   {
+    path: '/storehouse',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'Storehouse',
+        component: () => import('@/views/storehouse/index'),
+        meta: { title: 'Storehouse', icon: 'test' }
+      }
+    ]
+  },
+  {
+    path: '/block',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'Block',
+        component: () => import('@/views/block/index'),
+        meta: { title: 'Block', icon: 'test' }
+      }
+    ]
+  },
+  {
+    path: '/organizational',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'Organizational',
+        component: () => import('@/views/organizational/index'),
+        meta: { title: 'Organizational', icon: 'test' }
+      }
+    ]
+  },
+  {
     path: '/pinManagement',
     component: Layout,
     children: [

@@ -6,10 +6,17 @@ import { asyncRouterMap, constantRouterMap } from '@/router'
  * @param route
  */
 function hasPermission(roles, route) {
-  if (route.meta && route.meta.roles) {
-    return roles.some(role => route.meta.roles.includes(role))
-  } else {
+  // if (route.meta && route.meta.roles) {
+  //   return roles.some(role => route.name === role || route.children.name === role)
+  // } else {
+  //   return true
+  // }
+  if (roles.some(role => route.name === role)) {
     return true
+  }
+
+  if (route.children) {
+    return roles.some(role => route.children[0].name === role)
   }
 }
 
@@ -23,6 +30,10 @@ function filterAsyncRouter(routes, roles) {
 
   routes.forEach(route => {
     const tmp = { ...route }
+    // 错误路由重定向 404
+    if (tmp.path === '*') {
+      res.push(tmp)
+    }
     if (hasPermission(roles, tmp)) {
       if (tmp.children) {
         tmp.children = filterAsyncRouter(tmp.children, roles)
@@ -30,7 +41,6 @@ function filterAsyncRouter(routes, roles) {
       res.push(tmp)
     }
   })
-
   return res
 }
 
@@ -50,6 +60,7 @@ const permission = {
       return new Promise(resolve => {
         const { roles } = data
         let accessedRouters
+        // if (roles.includes('admin')) {
         if (roles.includes('admin')) {
           accessedRouters = asyncRouterMap
         } else {

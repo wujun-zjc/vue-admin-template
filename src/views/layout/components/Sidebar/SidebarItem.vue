@@ -1,6 +1,8 @@
 <template>
   <div v-if="!item.hidden&&item.children" class="menu-wrapper">
 
+    <!-- 只有一个显示的子菜单(无多个显示子菜单,子菜单无显示子菜单,非永久显示菜单) 就不显示父菜单 对应router无子集单独页面 仍然有父级Layout -->
+    <!-- 与需求不符,所以修改hasOneShowingChild判定, 唯一显示子菜单&&无name -->
     <template v-if="hasOneShowingChild(item.children,item) && (!onlyOneChild.children||onlyOneChild.noShowingChildren)&&!item.alwaysShow">
       <app-link :to="resolvePath(onlyOneChild.path)">
         <el-menu-item :index="resolvePath(onlyOneChild.path)" :class="{'submenu-title-noDropdown':!isNest}">
@@ -77,7 +79,9 @@ export default {
       })
 
       // When there is only one child router, the child router is displayed by default
-      if (showingChildren.length === 1) {
+      // if (showingChildren.length === 1) {
+      // parent有name就是实际菜单, 没有就是Layout
+      if (showingChildren.length === 1 && !parent.name) {
         return true
       }
 
