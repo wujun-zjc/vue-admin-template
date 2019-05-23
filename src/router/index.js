@@ -53,8 +53,7 @@ export const constantRouterMap = [
     children: [{
       path: '/',
       component: () =>
-        // import('@/views/three/index'),
-        import('@/views/home/index'),
+        import('@/views/dashboard/index'),
       meta: {
         title: 'Dashboard',
         icon: 'dashboard',
@@ -62,67 +61,6 @@ export const constantRouterMap = [
       }
     }]
   },
-  {
-    path: '/notification',
-    hidden: true,
-    component: Layout,
-    children: [{
-      path: 'index',
-      name: 'Notification',
-      component: () =>
-        import('@/views/notification/index'),
-      meta: {
-        title: 'Notification',
-        icon: 'notification'
-      }
-    }]
-  },
-
-  {
-    path: '/home',
-    component: Layout,
-    children: [{
-      path: 'index',
-      name: 'home',
-      component: () =>
-        import('@/views/home/index'),
-      meta: {
-        title: 'Home',
-        icon: 'home'
-      }
-    }]
-  },
-  {
-    path: '/individualMonitoring',
-    component: Layout,
-    children: [{
-      path: 'index',
-      name: 'individualMonitoring',
-      component: () =>
-        import('@/views/individualMonitoring/index'),
-      meta: {
-        title: 'IndividualMonitoring',
-        icon: 'individualMonitoring',
-        cache: true
-      }
-    }]
-  },
-  {
-    path: '/sendMsg',
-    component: Layout,
-    hidden: true,
-    children: [{
-      path: 'index',
-      name: 'sendMsg',
-      component: () =>
-        import('@/views/sendMsg/index'),
-      meta: {
-        title: 'SendMsg',
-        icon: 'notification'
-      }
-    }]
-  },
-
   {
     path: '/404',
     component: () =>

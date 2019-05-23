@@ -100,7 +100,6 @@ import LangSelect from '@/components/LangSelect'
 import ThemePicker from '@/components/ThemePicker'
 import Screenfull from '@/components/Screenfull'
 import { getTableData, readed } from '@/api/systemManagement/messages'
-import { confirm } from '@/api/intelligentMonitoring/alarm'
 import axios from 'axios'
 import qs from 'qs'
 import store from '../../store'
@@ -126,18 +125,8 @@ export default {
       total: 0
     }
   },
-  created() {
-    // 页面刚进入时开启长连接
-    // this.initWebSocket();
-    // this.selectUnReadMsg();
-    // this.getList();
-  },
-  destroyed: function() {
-    //页面销毁时关闭长连接
-    // this.websocketclose();
-  },
   computed: {
-    ...mapGetters(['sidebar', 'user', 'avatar', 'language', 'redataLength']),
+    ...mapGetters(['sidebar', 'user', 'avatar', 'language']),
     lang() {
       return this.$store.state.app.language
     },
@@ -192,99 +181,6 @@ export default {
         { title: this.$t('subSystem.organizationalmanagemen'), path: '/' },
         { title: this.$t('subSystem.systemsetting'), path: '/' }
       ]
-    },
-    initWebSocket() {
-      //初始化weosocket
-      // const wsuri = "ws://127.0.0.1:8086/socketServer/" +store.getters.user.su_id; //ws地址
-      const wsuri =
-        'ws://223.80.100.88:522/socketServer/' + store.getters.user.su_id //ws地址
-      this.websock = new WebSocket(wsuri)
-      this.websock.onopen = this.websocketonopen
-
-      this.websock.onerror = this.websocketonerror
-
-      this.websock.onmessage = this.websocketonmessage
-      this.websock.onclose = this.websocketclose
-    },
-    websocketonopen() {
-      console.log('WebSocket连接成功')
-    },
-    websocketonerror(e) {
-      //错误
-      console.log('WebSocket连接发生错误')
-    },
-    websocketonmessage(e) {
-      //数据接收
-      this.redata.unshift(JSON.parse(e.data))
-      if (e.data) {
-        let alarm = JSON.parse(e.data)
-        this.openMessageBox(alarm)
-        this.selectUnReadMsg()
-      }
-    },
-    websocketsend(agentData) {
-      //数据发送
-      this.websock.send(agentData)
-    },
-    websocketclose(e) {
-      //关闭
-      if (e) console.log('connection closed (' + e.data + ')')
-    },
-    resetAlarm() {
-      // alert("reset");
-      this.redata = []
-      this.redataLength = 0
-      this.isTrue = false
-    },
-    openMessageBox(msg) {
-      this.$confirm(msg.content, '报警消息', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      })
-        .then(() => {
-          readed(msg.id)
-            .then(res => {
-              this.$message({
-                type: 'success',
-                message: '该消息已读!'
-              })
-              this.getList()
-              this.selectUnReadMsg()
-              confirm(msg.attribute)
-            })
-            .catch(res => {
-              console.log(res)
-            })
-        })
-        .catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已忽略'
-          })
-        })
-    },
-    selectUnReadMsg() {
-      let that = this
-      axios
-        .get(
-          'http://223.80.100.88:522/selectUnReadMsg?id=' +
-            store.getters.user.su_id
-        )
-        .then(response => {
-          let length = JSON.parse(response.data)
-          that.$store
-            .dispatch('GetRedataLength', length)
-            .then(() => {
-              console.log('未读:', length)
-            })
-            .catch(() => {
-              console.log(length)
-            })
-        })
-        .catch(error => {
-          console.log(error)
-        })
     },
     //列表展示
     getList() {
@@ -447,72 +343,5 @@ export default {
 }
 .el-badge__content {
   border: none;
-}
-.alarm-info-box-h {
-  height: 240px;
-  overflow-y: hidden;
-}
-.alarm-info-box {
-  //padding: 10px;
-  //height:320px;
-  //overflow-y:hidden;
-  .alarm-info-title {
-    height: 60px;
-    font-size: 18px;
-    border-bottom: 1px solid #ececec;
-    line-height: 60px;
-    .alarm-info-title-left {
-      float: left;
-      padding-left: 20px;
-    }
-    .alarm-info-title-right {
-      float: right;
-      padding-right: 20px;
-      cursor: pointer;
-    }
-    .alarm-info-title-right:hover {
-      color: red;
-    }
-  }
-  .alarm-info-content {
-    //padding:10px 0;
-    .alarm-info-item {
-      // list-style: none;
-      // margin-top: 0;
-      // padding: 0;
-      // li{
-      height: 80px;
-      padding: 15px;
-      border-bottom: 1px solid #ececec;
-      font-size: 16px;
-      display: block;
-      // dt{
-      span.alarm-info-content-tit {
-        float: left;
-      }
-      span.alarm-info-content-date {
-        float: right;
-      }
-      // }
-      .alarm-info-content-content {
-        clear: both;
-        float: left;
-        margin-left: 0;
-        margin-top: 10px;
-        color: #999;
-      }
-      // }
-    }
-  }
-  .alarm-show-more {
-    font-size: 16px;
-    text-align: center;
-    margin-bottom: 17px;
-    cursor: pointer;
-    margin-top: 14px;
-  }
-  .alarm-show-more:hover {
-    color: red;
-  }
 }
 </style>

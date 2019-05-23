@@ -10,7 +10,6 @@ const getters = {
   roles: state => state.user.roles,
   user: state => state.user.user,
   permission_routers: state => state.permission.routers,
-  addRouters: state => state.permission.addRouters,
-  redataLength: state => state.websocket.redataLength
+  addRouters: state => state.permission.addRouters
 }
 export default getters
