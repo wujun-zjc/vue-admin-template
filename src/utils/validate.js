@@ -30,3 +30,18 @@ export function validatAlphabets(str) {
   const reg = /^[A-Za-z]+$/
   return reg.test(str)
 }
+//手机号验证
+export function validatePhone(str){
+  const reg=/^1(3|4|5|7|8)\d{9}$/
+  return reg.test(str)
+}
+//邮箱验证
+export function validateEmail(str){
+  const reg=/^[A-Za-z\d]+([-_.][A-Za-z\d]+)*@([A-Za-z\d]+[-.])+[A-Za-z\d]{2,4}$/
+  return reg.test(str)
+}
+//身份证号验证
+export function validateId(str){
+  const reg=/^[1-9]\d{7}((0[1-9])|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}$|^[1-9]\d{5}[1-9]\d{3}((0[1-9])|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}([0-9]|X)$/
+  return reg.test(str)
+}

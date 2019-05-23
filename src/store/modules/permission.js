@@ -1,5 +1,7 @@
-import { asyncRouterMap, constantRouterMap } from '@/router'
-
+import {
+  asyncRouterMap,
+  constantRouterMap
+} from '@/router'
 /**
  * 通过meta.role判断是否与当前用户权限匹配
  * @param roles
@@ -29,7 +31,9 @@ function filterAsyncRouter(routes, roles) {
   const res = []
 
   routes.forEach(route => {
-    const tmp = { ...route }
+    const tmp = {
+      ...route
+    }
     // 错误路由重定向 404
     if (tmp.path === '*') {
       res.push(tmp)
@@ -56,12 +60,17 @@ const permission = {
     }
   },
   actions: {
-    GenerateRoutes({ commit }, data) {
+    GenerateRoutes({
+      commit,
+      rootGetters
+    }, data) {
       return new Promise(resolve => {
-        const { roles } = data
+        const {
+          roles
+        } = data
         let accessedRouters
         // if (roles.includes('admin')) {
-        if (roles.includes('admin')) {
+        if (rootGetters.user.su_code === 'admin') {
           accessedRouters = asyncRouterMap
         } else {
           accessedRouters = filterAsyncRouter(asyncRouterMap, roles)

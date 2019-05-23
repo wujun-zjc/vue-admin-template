@@ -15,6 +15,19 @@
   left: 0;
   position: relative;
   margin: 0 auto;
+  .el-form{
+    margin: 0 50px;
+    min-width: 400px;
+    .el-select{
+      width: 100%;
+    }
+    .area-select.large{
+      width: 100%;
+    }
+    .el-date-editor {
+      width: 100%;
+    }
+  }
 }
 
 //element ui upload
@@ -30,11 +43,78 @@
 }
 
 // color-picker
-.el-color-picker__trigger{
+.el-color-picker__trigger {
   border: 0;
-  .el-color-picker__color{
+
+  .el-color-picker__color {
     border: 0;
   }
 }
 
 
+// el-date-picker
+.el-date-editor--datetimerang,
+.el-date-editor--daterang {
+  // width: 404px;
+
+  .el-range-separator {
+    width: 10%;
+  }
+}
+
+//整体字体调小
+.el-submenu__title{
+  font-size: 13px;
+}
+.el-menu-item{
+  font-size: 13px;
+}
+.el-input--medium {
+  font-size: 13px;
+}
+.el-select-dropdown__item{
+  font-size: 13px;
+}
+.el-select-dropdown__empty {
+  font-size: 13px;
+}
+.el-range-editor--medium .el-range-input {
+  font-size: 13px;
+}
+.el-range-editor--medium .el-range-separator {
+  font-size: 13px;
+}
+.el-button--medium {
+  font-size: 13px;
+}
+.el-tabs__item {
+  font-size: 13px;
+}
+.el-table {
+  font-size: 13px;
+}
+.cascader-menu-list {
+  font-size: 13px;
+}
+.area-select .area-selected-trigger {
+  font-size: 13px;
+  padding-top:11px;
+}
+.vue-treeselect__control, .vue-treeselect__menu-container {
+  font-size: 13px !important;
+}
+.img_content{
+  font-size: 14px !important;
+}
+.el-card__header{
+  font-size: 14px;
+}
+.el-tree-node__label {
+  font-size: 13px;
+}
+.el-form-item__label{
+  font-size: 13px;
+}
+.el-radio__label{
+  font-size: 13px;
+}

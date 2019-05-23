@@ -14,7 +14,8 @@ const user = {
     token: getToken(),
     name: '',
     avatar: '',
-    roles: []
+    roles: [],
+    user: {}
   },
 
   mutations: {
@@ -29,6 +30,9 @@ const user = {
     },
     SET_ROLES: (state, roles) => {
       state.roles = roles
+    },
+    SET_USER: (state, user) => {
+      state.user = user
     }
   },
 
@@ -37,47 +41,48 @@ const user = {
     Login({
       commit
     }, userInfo) {
-      const username = userInfo.username.trim()
-      return new Promise((resolve, reject) => {
-        login(username, userInfo.password).then(response => {
-          // console.log(response.obj)
-          // response = {
-          //   obj: {
-          //     su_id: 'admin',
-          //     menus: ['Example', 'Tree', 'Form', 'Test', 'BaseManagement']
-          //   }
-          // }
-          setToken('admin')
-          commit('SET_TOKEN', 'admin')
-          // const data = response.obj
-          // setToken(data.su_id)
-          // commit('SET_TOKEN', data.su_id)
-
-          // if (data.menus && data.menus.length > 0) { // 验证返回的roles是否是一个非空数组
-          //   commit('SET_ROLES', data.menus)
-          // } else {
-          //   reject('getInfo: menus must be a non-null array !')
-          // }
-
-          // commit('SET_NAME', data.su_name)
-          // commit('SET_AVATAR', data.avatar)
-
-          resolve()
-          // resolve(data.menus)
-        }).catch(error => {
-          reject(error)
-        })
-      })
+      // const username = userInfo.username.trim()
+      // return new Promise((resolve, reject) => {
+      //   login(username, userInfo.password).then(response => {
+      //     if (response.success) {
+      //       const data = response.obj
+      //       setToken(data.su_id)
+      //       commit('SET_TOKEN', data.su_id)
+      //       resolve()
+      //     } else {
+      //       reject(response)
+      //     }
+      //   }).catch(error => {
+      //     reject(error)
+      //   })
+      // })
 
       // 模拟
-      // return new Promise((resolve, reject) => {
-      //   const data = {
-      //     token: 'admin'
-      //   }
-      //   setToken(data.token)
-      //   commit('SET_TOKEN', data.token)
-      //   resolve()
-      // })
+      const username = userInfo.username.trim()
+      const password = userInfo.password.trim()
+      return new Promise((resolve, reject) => {
+        let data = {
+          token: ''
+        }
+        if (username === 'admin') {
+          if (password === '123456') {
+            data = {
+              token: 'admin'
+            }
+          } else {
+            reject({
+              msg: '密码错误!'
+            })
+          }
+        } else {
+          data = {
+            token: username
+          }
+        }
+        setToken(data.token)
+        commit('SET_TOKEN', data.token)
+        resolve()
+      })
     },
 
     // 获取用户信息
@@ -87,32 +92,58 @@ const user = {
     }) {
       // return new Promise((resolve, reject) => {
       //   getInfo(state.token).then(response => {
-      //     const data = response.data
-      //     if (data.roles && data.roles.length > 0) { // 验证返回的roles是否是一个非空数组
-      //       commit('SET_ROLES', data.roles)
+      //     const data = response.obj
+      //     if (data.menus && data.menus.length > 0) { // 验证返回的roles是否是一个非空数组
+      //       commit('SET_ROLES', data.menus)
       //     } else {
-      //       reject('getInfo: roles must be a non-null array !')
+      //       reject('getInfo: menus must be a non-null array !')
       //     }
-      //     commit('SET_NAME', data.name)
-      //     commit('SET_AVATAR', data.avatar)
-      //     resolve(response)
+      //     commit('SET_USER', {
+      //       su_id: data.su_id,
+      //       so_id: data.so_id,
+      //       su_code: data.su_code,
+      //       su_name: data.su_name
+      //     })
+      //     // commit('SET_NAME', data.name)
+      //     // commit('SET_AVATAR', data.avatar)
+
+      //     resolve()
       //   }).catch(error => {
       //     reject(error)
       //   })
       // })
 
       // 模拟
-      return new Promise((resolve, reject) => {
-        const data = {
-          name: 'admin',
-          roles: ['admin']
+      let data = {
+        su_id: '1',
+        so_id: '1',
+        su_code: '',
+        su_name: '',
+        menus: ['']
+      }
+      if (state.token === 'admin') {
+        data = {
+          su_id: '1',
+          so_id: '1',
+          su_code: 'admin',
+          su_name: 'admin',
+          menus: ['admin']
         }
-        commit('SET_ROLES', data.roles)
-        commit('SET_NAME', data.name)
-        commit('SET_AVATAR', data.avatar)
-        resolve({
-          data: data
-        })
+      } else {
+        data = {
+          su_id: '1',
+          so_id: '1',
+          su_code: state.token,
+          su_name: state.token,
+          menus: ['notification']
+        }
+      }
+      commit('SET_ROLES', data.menus)
+      commit('SET_USER', {
+        su_id: data.su_id,
+        so_id: data.so_id,
+        su_code: data.su_code,
+        su_name: data.su_name
       })
     },
 
@@ -131,13 +162,9 @@ const user = {
       //     reject(error)
       //   })
       // })
-      // 模拟
-      return new Promise((resolve, reject) => {
-        commit('SET_TOKEN', '')
-        commit('SET_ROLES', [])
-        removeToken()
-        resolve()
-      })
+      commit('SET_TOKEN', '')
+      commit('SET_ROLES', [])
+      removeToken()
     },
 
     // 前端 登出

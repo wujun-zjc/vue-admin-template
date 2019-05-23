@@ -4,11 +4,15 @@
       <router-link class="logo-wraper" to="/">
         <div class="logo-name">
           <div class="logo-box">
-            <svg-icon icon-class="cloud"/>
+            <!-- <svg-icon icon-class="pig-logo"/> -->
+            <svg-icon icon-class="logo"/>
           </div>
           <div class="name-box">
             <span class="name">{{ $t('header.platformName') }}</span>
           </div>
+          <!-- <div class="base-box">
+            <span class="base-name">青岛城阳上马</span>
+          </div>-->
         </div>
       </router-link>
 
@@ -16,7 +20,8 @@
         <div class="avatar-wrapper">
           <!-- <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar"> -->
           <svg-icon icon-class="user"/>
-          <span class="user-name">{{ $t('header.userName') }}</span>
+          <!-- <span class="user-name">{{ $t('header.userName') }}</span> -->
+          <span class="user-name">{{ user.su_name }}</span>
           <i class="el-icon-caret-bottom"/>
         </div>
         <el-dropdown-menu slot="dropdown" class="user-dropdown">
@@ -29,17 +34,42 @@
         </el-dropdown-menu>
       </el-dropdown>
 
-      <div class="lang-select-wraper">
-        <lang-select class="international right-menu-item"/>
-      </div>
+      <!-- <el-tooltip :content="$t('header.alarm')" effect="dark" placement="bottom">
+        <div class="alarm-info-wraper">
+          <router-link :to="{ name: 'Notification'}">
+            <svg-icon style="color:#fff;font-size:22px;" icon-class="alarmInfo"/>
+            <el-badge v-show="redataLength!=0" :value="redataLength" class="item"></el-badge>
+          </router-link>
+        </div>
+      </el-tooltip>-->
 
-      <div class="color-picker-wraper">
-        <el-tooltip :content="$t('navbar.theme')" effect="dark" placement="bottom">
+      <!-- <el-tooltip :content="$t('header.lang')" effect="dark" placement="bottom">
+        <div class="lang-select-wraper">
+          <lang-select class="international right-menu-item"/>
+        </div>
+      </el-tooltip>-->
+
+      <el-tooltip :content="$t('navbar.screenfull')" effect="dark" placement="bottom">
+        <div class="screenfull-wraper">
+          <screenfull class="screenfull right-menu-item"/>
+        </div>
+      </el-tooltip>
+
+      <!-- <el-tooltip :content="$t('header.bigScreen')" effect="dark" placement="bottom">
+        <div class="big-screen">
+          <router-link class="inlineBlock" to="/bigScreen">
+            <el-button type="primary">大屏</el-button>
+          </router-link>
+        </div>
+      </el-tooltip>-->
+
+      <!-- <el-tooltip :content="$t('navbar.theme')" effect="dark" placement="bottom">
+        <div class="color-picker-wraper">
           <theme-picker class="theme-switch right-menu-item"/>
-        </el-tooltip>
-      </div>
+        </div>
+      </el-tooltip>-->
 
-      <div class="sub-system-nav">
+      <!-- <div class="sub-system-nav">
         <router-link
           v-for="subSystem in subSystemList"
           :key="subSystem.title"
@@ -48,7 +78,7 @@
         >
           <span class="name">{{ subSystem.title }}</span>
         </router-link>
-      </div>
+      </div>-->
     </div>
     <div class="app-body">
       <div v-if="device==='mobile'&&sidebar.opened" class="drawer-bg" @click="handleClickOutside"/>
@@ -68,7 +98,12 @@ import { Navbar, Sidebar, AppMain, TagsView } from './components'
 import ResizeMixin from './mixin/ResizeHandler'
 import LangSelect from '@/components/LangSelect'
 import ThemePicker from '@/components/ThemePicker'
-
+import Screenfull from '@/components/Screenfull'
+import { getTableData, readed } from '@/api/systemManagement/messages'
+import { confirm } from '@/api/intelligentMonitoring/alarm'
+import axios from 'axios'
+import qs from 'qs'
+import store from '../../store'
 export default {
   name: 'Layout',
   components: {
@@ -76,17 +111,33 @@ export default {
     Sidebar,
     AppMain,
     TagsView,
+    Screenfull,
     LangSelect,
     ThemePicker
   },
   mixins: [ResizeMixin],
   data() {
     return {
-      subSystemList: []
+      subSystemList: [],
+      redata: [],
+      isTrue: false,
+      // redataLength:0,
+      operation: '0',
+      total: 0
     }
   },
+  created() {
+    // 页面刚进入时开启长连接
+    // this.initWebSocket();
+    // this.selectUnReadMsg();
+    // this.getList();
+  },
+  destroyed: function() {
+    //页面销毁时关闭长连接
+    // this.websocketclose();
+  },
   computed: {
-    ...mapGetters(['sidebar', 'avatar', 'language']),
+    ...mapGetters(['sidebar', 'user', 'avatar', 'language', 'redataLength']),
     lang() {
       return this.$store.state.app.language
     },
@@ -122,6 +173,14 @@ export default {
         location.reload() // 为了重新实例化vue-router对象 避免bug
       })
     },
+    exit() {
+      this.$store.dispatch('LogOut').then(() => {
+        // location.reload() // 为了重新实例化vue-router对象 避免bug
+        this.$router.push({
+          path: '/guide'
+        })
+      })
+    },
     setSubSystemList() {
       this.subSystemList = [
         { title: this.$t('subSystem.home'), path: '/' },
@@ -133,6 +192,107 @@ export default {
         { title: this.$t('subSystem.organizationalmanagemen'), path: '/' },
         { title: this.$t('subSystem.systemsetting'), path: '/' }
       ]
+    },
+    initWebSocket() {
+      //初始化weosocket
+      // const wsuri = "ws://127.0.0.1:8086/socketServer/" +store.getters.user.su_id; //ws地址
+      const wsuri =
+        'ws://223.80.100.88:522/socketServer/' + store.getters.user.su_id //ws地址
+      this.websock = new WebSocket(wsuri)
+      this.websock.onopen = this.websocketonopen
+
+      this.websock.onerror = this.websocketonerror
+
+      this.websock.onmessage = this.websocketonmessage
+      this.websock.onclose = this.websocketclose
+    },
+    websocketonopen() {
+      console.log('WebSocket连接成功')
+    },
+    websocketonerror(e) {
+      //错误
+      console.log('WebSocket连接发生错误')
+    },
+    websocketonmessage(e) {
+      //数据接收
+      this.redata.unshift(JSON.parse(e.data))
+      if (e.data) {
+        let alarm = JSON.parse(e.data)
+        this.openMessageBox(alarm)
+        this.selectUnReadMsg()
+      }
+    },
+    websocketsend(agentData) {
+      //数据发送
+      this.websock.send(agentData)
+    },
+    websocketclose(e) {
+      //关闭
+      if (e) console.log('connection closed (' + e.data + ')')
+    },
+    resetAlarm() {
+      // alert("reset");
+      this.redata = []
+      this.redataLength = 0
+      this.isTrue = false
+    },
+    openMessageBox(msg) {
+      this.$confirm(msg.content, '报警消息', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+        .then(() => {
+          readed(msg.id)
+            .then(res => {
+              this.$message({
+                type: 'success',
+                message: '该消息已读!'
+              })
+              this.getList()
+              this.selectUnReadMsg()
+              confirm(msg.attribute)
+            })
+            .catch(res => {
+              console.log(res)
+            })
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已忽略'
+          })
+        })
+    },
+    selectUnReadMsg() {
+      let that = this
+      axios
+        .get(
+          'http://223.80.100.88:522/selectUnReadMsg?id=' +
+            store.getters.user.su_id
+        )
+        .then(response => {
+          let length = JSON.parse(response.data)
+          that.$store
+            .dispatch('GetRedataLength', length)
+            .then(() => {
+              console.log('未读:', length)
+            })
+            .catch(() => {
+              console.log(length)
+            })
+        })
+        .catch(error => {
+          console.log(error)
+        })
+    },
+    //列表展示
+    getList() {
+      getTableData(this.operation)
+        .then(response => {
+          console.log(response)
+        })
+        .catch(res => console.log(res))
     }
   }
 }
@@ -146,12 +306,13 @@ export default {
   position: relative;
   height: 100%;
   width: 100%;
+  overflow-y: hidden;
   .app-header {
     width: 100%;
     height: 70px;
     line-height: 70px;
     padding: 0 20px;
-    background-color: #245ca2;
+    background-color: #363c5b;
     color: #fff;
     overflow: hidden;
     .logo-wraper {
@@ -162,21 +323,28 @@ export default {
       .logo-name {
         overflow: hidden;
         .logo-box,
-        .name-box {
+        .name-box,
+        .base-box {
           // display: inline-block;
           float: left;
           height: 70px;
           line-height: 70px;
+          margin-left: 20px;
         }
         .logo-box {
           .svg-icon {
             font-size: 70px;
-            margin-top: -5px;
+            // margin-top: -5px;
           }
         }
         .name-box {
           .name {
             font-size: 22px;
+          }
+        }
+        .base-box {
+          .base-name {
+            font-size: 18px;
           }
         }
       }
@@ -213,13 +381,26 @@ export default {
         }
       }
     }
+    .screenfull-wraper {
+      float: right;
+      margin-right: 20px;
+    }
     .lang-select-wraper {
+      float: right;
+      margin-right: 20px;
+    }
+    .big-screen {
       float: right;
       margin-right: 20px;
     }
     .color-picker-wraper {
       float: right;
       margin-right: 20px;
+    }
+    .alarm-info-wraper {
+      float: right;
+      margin-right: 20px;
+      padding: 0;
     }
     .avatar-container {
       float: right;
@@ -258,5 +439,80 @@ export default {
   height: 100%;
   position: absolute;
   z-index: 999;
+}
+</style>
+<style rel="stylesheet/scss" lang="scss">
+.el-popover {
+  padding: 0;
+}
+.el-badge__content {
+  border: none;
+}
+.alarm-info-box-h {
+  height: 240px;
+  overflow-y: hidden;
+}
+.alarm-info-box {
+  //padding: 10px;
+  //height:320px;
+  //overflow-y:hidden;
+  .alarm-info-title {
+    height: 60px;
+    font-size: 18px;
+    border-bottom: 1px solid #ececec;
+    line-height: 60px;
+    .alarm-info-title-left {
+      float: left;
+      padding-left: 20px;
+    }
+    .alarm-info-title-right {
+      float: right;
+      padding-right: 20px;
+      cursor: pointer;
+    }
+    .alarm-info-title-right:hover {
+      color: red;
+    }
+  }
+  .alarm-info-content {
+    //padding:10px 0;
+    .alarm-info-item {
+      // list-style: none;
+      // margin-top: 0;
+      // padding: 0;
+      // li{
+      height: 80px;
+      padding: 15px;
+      border-bottom: 1px solid #ececec;
+      font-size: 16px;
+      display: block;
+      // dt{
+      span.alarm-info-content-tit {
+        float: left;
+      }
+      span.alarm-info-content-date {
+        float: right;
+      }
+      // }
+      .alarm-info-content-content {
+        clear: both;
+        float: left;
+        margin-left: 0;
+        margin-top: 10px;
+        color: #999;
+      }
+      // }
+    }
+  }
+  .alarm-show-more {
+    font-size: 16px;
+    text-align: center;
+    margin-bottom: 17px;
+    cursor: pointer;
+    margin-top: 14px;
+  }
+  .alarm-show-more:hover {
+    color: red;
+  }
 }
 </style>

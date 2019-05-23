@@ -1,16 +1,15 @@
 /**
  * Created by liyc on 2018/6/14.
  */
-const PopUp = (function () {
-  function PopUp(viewer) {
-    this.popUpCreated = false;
-    this.viewer = viewer;
-    this.removeHandler = undefined;
-    this.entity = undefined;
-  }
+
+export function PopUp(viewer) {
+  this.popUpCreated = false;
+  this.viewer = viewer;
+  this.removeHandler = undefined;
+  this.entity = undefined;
   PopUp.prototype.showPopUp = function (position) {
     var self = this;
-    self.closePopUp();
+    // self.closePopUp();
 
     self.entity = viewer.entities.add({
       position: position,
@@ -18,19 +17,25 @@ const PopUp = (function () {
         verticalOrigin: Cesium.VerticalOrigin.BOTTOM
       }
     });
-    if (!self.popUpCreated) {
-      $('#trackPopUpLink').empty();
-      self.popUpCreated = true;
-    }
+    // if (!self.popUpCreated) {
+    //   $('#trackPopUpLink').empty();
+    //   self.popUpCreated = true;
+    // }
     $('#trackPopUp').show();
-    if (self.popUpCreated) {
+    if (!self.popUpCreated) {
       var c = Cesium.SceneTransforms.wgs84ToWindowCoordinates(self.viewer.scene, self.entity.position.getValue(Cesium.JulianDate.now()));
-      self.positionPopUp(c);
+      if (c) {
+        
+        self.positionPopUp(c);
+      }
       self.removeHandler = viewer.scene.postRender.addEventListener(function () {
         var changedC = Cesium.SceneTransforms.wgs84ToWindowCoordinates(self.viewer.scene, self.entity.position.getValue(Cesium.JulianDate.now()));
-        if ((c.x !== changedC.x) || (c.y !== changedC.y)) {
-          self.positionPopUp(changedC);
-          c = changedC;
+        if (!c || !changedC){
+        } else {
+          if ((c.x !== changedC.x) || (c.y !== changedC.y)) {
+            self.positionPopUp(changedC);
+            c = changedC;
+          }
         }
       });
       $('.popup-close-button').click(function () {
@@ -38,6 +43,7 @@ const PopUp = (function () {
         return false;
       });
     }
+    self.popUpCreated = true;
   }
   PopUp.prototype.closePopUp = function () {
     $('#trackPopUp').hide();
@@ -54,7 +60,7 @@ const PopUp = (function () {
 
   }
   PopUp.prototype.positionPopUp = function (c) {
-    var x = c.x - ($('#trackPopUpContent').width()) / 2;
+    var x = c.x - ($('#trackPopUpContent').width()) / 2 + 15;
     var y = c.y - ($('#trackPopUpContent').height()) - 30; //移动弹窗上下，以避免遮盖图标
     $('#trackPopUpContent').css('transform', 'translate3d(' + x + 'px, ' + y + 'px, 0)');
   }
@@ -65,7 +71,9 @@ const PopUp = (function () {
     // document.getElementById("video").style.display = "none"//不显示
 
   }
-  return PopUp;
-})()
 
-module.exports = PopUp
+}
+
+// module.exports = {
+//   PopUp
+// }

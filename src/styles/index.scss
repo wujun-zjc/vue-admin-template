@@ -130,9 +130,13 @@ code {
 }
 
 //main-container全局样式
-.app-main {
-  min-height: 100%
+.main-container {
+  min-width: 800px;
 }
+
+// .app-main {
+//   min-height: 100%
+// }
 
 .app-container {
   padding: 20px;
@@ -208,7 +212,8 @@ code {
   margin-bottom: 20px;
   border-radius: 5px;
   background-color: #fff;
-  .table-operation{
+
+  .table-operation {
     margin-bottom: 10px;
   }
 
@@ -220,7 +225,7 @@ code {
 }
 
 // 分页
-.pagination-wraper{
+.pagination-wraper {
   margin: 0;
   border-radius: 5px;
   background-color: #fff;
@@ -243,11 +248,63 @@ code {
   }
 }
 
-//refine vue-multiselect plugin
+// refine vue-multiselect plugin
 .multiselect {
   line-height: 16px;
 }
 
 .multiselect--active {
   z-index: 1000 !important;
+}
+
+// vue-area-linkage
+.area-cascader-wrap {
+  .area-select.large {
+    width: 200px;
+    height: 36px;
+
+    .area-select .area-selected-trigger {
+      color: #606266;
+    }
+
+    .area-select-icon {
+      border-width: 5px;
+      border-top-color: #c0c4cc;
+    }
+
+    .cascader-menu-option.selected {
+      color: #409EFF;
+      // font-weight: normal;
+    }
+  }
+
+  .area-select:hover {
+    outline: 0;
+    border-color: #409EFF;
+  }
+}
+
+.el-dialog {
+  .area-select.large {
+    width: 204px;
+
+    .area-selected-trigger {
+      line-height: 1.5;
+    }
+  }
+}
+
+// vue-treeselect
+.vue-treeselect__control,
+.vue-treeselect__menu-container {
+  font-size: 14px;
+  label {
+    font-weight: normal;
+  }
+  .vue-treeselect__option--selected{
+    label {
+      font-weight: bold;
+      color: #409EFF;
+    }
+  }
 }

@@ -13,13 +13,13 @@ NProgress.configure({
   showSpinner: false
 }) // NProgress Configuration
 
-const whiteList = ['/login', '404'] // no redirect whitelist
+const whiteList = ['/login', '/login1', '/404', '/guide'] // no redirect whitelist
 
 router.beforeEach((to, from, next) => {
   NProgress.start() // start progress bar
   if (getToken()) { // determine if there has token
     /* has token*/
-    if (to.path === '/login') {
+    if (to.path === '/login' || to.path === '/login1') {
       next({
         path: '/'
       })
@@ -27,8 +27,8 @@ router.beforeEach((to, from, next) => {
     } else {
       if (store.getters.roles.length === 0) { // 判断当前用户是否已拉取完user_info信息
         store.dispatch('GetInfo').then(res => { // 拉取user_info
-          console.log(res.data.roles)
-          const roles = res.data.roles // note: roles must be a array! such as: ['editor','develop']
+          const roles = store.getters.roles // note: roles must be a array! such as: ['editor','develop']
+          // const roles = res.obj.menus // note: roles must be a array! such as: ['editor','develop']
           // const roles = ['404', 'Example', 'Table', 'Tree', 'Form', 'Test']
           store.dispatch('GenerateRoutes', {
             roles
@@ -40,8 +40,8 @@ router.beforeEach((to, from, next) => {
             }) // hack方法 确保addRoutes已完成 ,set the replace: true so the navigation will not leave a history record
           })
         }).catch((err) => {
-          store.dispatch('FedLogOut').then(() => {
-            Message.error(err || 'Verification failed, please login again')
+          store.dispatch('LogOut').then(() => {
+            Message.error(err.message || 'Verification failed, please login again')
             next({
               path: '/'
             })
@@ -62,6 +62,6 @@ router.beforeEach((to, from, next) => {
   }
 })
 
-router.afterEach(() => {
+router.afterEach((to, from) => {
   NProgress.done() // finish progress bar
 })

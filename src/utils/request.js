@@ -7,7 +7,7 @@ import {
   BASE64,
   utf16to8,
   md5
-} from '../assets/js/base64.js'
+} from '../assets/js/base64'
 import {
   getToken
 } from '@/utils/auth'
@@ -15,11 +15,7 @@ import store from '../store'
 
 // 创建axios实例
 const service = axios.create({
-  // 'http://platform-show.estar-info.com/server/claimDataController.do?method=getPolicyList&esType=underwriteService'
-  // baseURL: 'http://platform-show.estar-info.com/server', // api 的 base_url
-  // baseURL: 'http://192.168.30.83:9191/server', // api 的 base_url
-  baseURL: 'http://192.168.100.165:9191/rest', // api 的 base_url
-  // baseURL: 'http://223.80.100.88:486/rest', // api 的 base_url
+  baseURL: process.env.BASE_API,
   timeout: 45000 // 请求超时时间
 })
 
@@ -34,9 +30,7 @@ service.interceptors.request.use(
     config.data = {
       data: config.data,
       // timestamp: new Date(),
-      user: {
-        su_id: getToken()
-      }
+      user: store.getters.user
     }
     // const timestamp = 1
     // const randomNumber = 1

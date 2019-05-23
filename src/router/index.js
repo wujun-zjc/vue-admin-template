@@ -9,6 +9,10 @@ Vue.use(Router)
 /* Layout */
 import Layout from '../views/layout/Layout'
 
+/* Router Modules */
+// 系统管理
+import systemManagement from './systemManagement/systemManagement'
+
 /**
 * hidden: true                   if `hidden:true` will not show in the sidebar(default is false)
 * alwaysShow: true               if set true, will always show the root menu, whatever its child routes length
@@ -19,13 +23,27 @@ import Layout from '../views/layout/Layout'
 * meta : {
     title: 'title'               the name show in submenu and breadcrumb (recommend set)
     icon: 'svg-name'             the icon show in the sidebar
+    cache: true                  if true, the page will be cached(default is false)
     breadcrumb: false            if false, the item will hidden in breadcrumb(default is true)
   }
 **/
 export const constantRouterMap = [
-  { path: '/login', component: () => import('@/views/login/index'), hidden: true },
-  { path: '/404', component: () => import('@/views/404'), hidden: true },
-
+  {
+    path: '/redirect',
+    component: Layout,
+    hidden: true,
+    children: [{
+      path: '/redirect/:path*',
+      component: () =>
+        import('@/views/redirect/index')
+    }]
+  },
+  {
+    path: '/login',
+    component: () =>
+      import('@/views/login/index'),
+    hidden: true
+  },
   {
     path: '/',
     component: Layout,
@@ -33,307 +51,101 @@ export const constantRouterMap = [
     name: 'Dashboard',
     hidden: true,
     children: [{
-      path: 'dashboard',
-      component: () => import('@/views/dashboard/index'),
-      meta: { title: 'Dashboard', icon: 'dashboard', noCache: true }
+      path: '/',
+      component: () =>
+        // import('@/views/three/index'),
+        import('@/views/home/index'),
+      meta: {
+        title: 'Dashboard',
+        icon: 'dashboard',
+        breadcrumb: false
+      }
     }]
+  },
+  {
+    path: '/notification',
+    hidden: true,
+    component: Layout,
+    children: [{
+      path: 'index',
+      name: 'Notification',
+      component: () =>
+        import('@/views/notification/index'),
+      meta: {
+        title: 'Notification',
+        icon: 'notification'
+      }
+    }]
+  },
+
+  {
+    path: '/home',
+    component: Layout,
+    children: [{
+      path: 'index',
+      name: 'home',
+      component: () =>
+        import('@/views/home/index'),
+      meta: {
+        title: 'Home',
+        icon: 'home'
+      }
+    }]
+  },
+  {
+    path: '/individualMonitoring',
+    component: Layout,
+    children: [{
+      path: 'index',
+      name: 'individualMonitoring',
+      component: () =>
+        import('@/views/individualMonitoring/index'),
+      meta: {
+        title: 'IndividualMonitoring',
+        icon: 'individualMonitoring',
+        cache: true
+      }
+    }]
+  },
+  {
+    path: '/sendMsg',
+    component: Layout,
+    hidden: true,
+    children: [{
+      path: 'index',
+      name: 'sendMsg',
+      component: () =>
+        import('@/views/sendMsg/index'),
+      meta: {
+        title: 'SendMsg',
+        icon: 'notification'
+      }
+    }]
+  },
+
+  {
+    path: '/404',
+    component: () =>
+      import('@/views/404'),
+    hidden: true
   }
+
 ]
 
 export const asyncRouterMap = [
+  /** When your routing table is too long, you can split it into small modules **/
+  systemManagement,
   {
-    path: '/example',
-    component: Layout,
-    redirect: '/example/table',
-    name: 'Example',
-    meta: { title: 'Example', icon: 'example' },
-    children: [
-      {
-        path: 'table',
-        name: 'Table',
-        component: () => import('@/views/table/index'),
-        meta: { title: 'Table', icon: 'table' }
-      },
-      {
-        path: 'tree',
-        name: 'Tree',
-        component: () => import('@/views/tree/index'),
-        meta: { title: 'Tree', icon: 'tree', roles: ['admin'] }
-      }
-    ]
-  },
-
-  {
-    path: '/form',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        name: 'Form',
-        component: () => import('@/views/form/index'),
-        meta: { title: 'Form', icon: 'form' }
-      }
-    ]
-  },
-
-  {
-    path: '/test',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        name: 'Test',
-        component: () => import('@/views/test/index'),
-        meta: { title: 'Test', icon: 'test' }
-      }
-    ]
-  },
-  {
-    path: '/equipmentType',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        name: 'EquipmentType',
-        component: () => import('@/views/equipmentType/index'),
-        meta: { title: 'EquipmentType', icon: 'test' }
-      }
-    ]
-  },
-  {
-    path: '/deviceManagement',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        name: 'DeviceManagement',
-        component: () => import('@/views/deviceManagement/index'),
-        meta: { title: 'DeviceManagement', icon: 'test' }
-      }
-    ]
-  },
-  {
-    path: '/cropSpecies',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        name: 'CropSpecies',
-        component: () => import('@/views/cropSpecies/index'),
-        meta: { title: 'CropSpecies', icon: 'test' }
-      }
-    ]
-  },
-  {
-    path: '/cropDiseases',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        name: 'CropDiseases',
-        component: () => import('@/views/cropDiseases/index'),
-        meta: { title: 'CropDiseases', icon: 'test' }
-      }
-    ]
-  },
-  {
-    path: '/pest',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        name: 'Pest',
-        component: () => import('@/views/pest/index'),
-        meta: { title: 'Pest', icon: 'test' }
-      }
-    ]
-  },
-  {
-    path: '/storehouse',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        name: 'Storehouse',
-        component: () => import('@/views/storehouse/index'),
-        meta: { title: 'Storehouse', icon: 'test' }
-      }
-    ]
-  },
-  {
-    path: '/block',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        name: 'Block',
-        component: () => import('@/views/block/index'),
-        meta: { title: 'Block', icon: 'test' }
-      }
-    ]
-  },
-  {
-    path: '/organizational',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        name: 'Organizational',
-        component: () => import('@/views/organizational/index'),
-        meta: { title: 'Organizational', icon: 'test' }
-      }
-    ]
-  },
-  {
-    path: '/pinManagement',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        name: 'PinManagement',
-        component: () => import('@/views/pinManagement/index'),
-        meta: { title: 'PinManagement', icon: 'test' }
-      }
-    ]
-  },
-  
-  {
-    path: '/logManagement',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        name: 'LogManagement',
-        component: () => import('@/views/logManagement/index'),
-        meta: { title: 'LogManagement', icon: 'test' }
-      }
-    ]
-  },
-  {
-    path: '/fertilizer',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        name: 'fertilizer',
-        component: () => import('@/views/fertilizer/index'),
-        meta: { title: 'Fertilizer', icon: 'test' }
-      }
-    ]
-  },
- 
-  {
-    path: '/chemicals',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        name: 'Chemicals',
-        component: () => import('@/views/chemicals/index'),
-        meta: { title: 'Chemicals', icon: 'test' }
-      }
-    ]
-  },
-  {
-    path: '/baseManagement',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        name: 'BaseManagement',
-        component: () => import('@/views/baseManagement/index'),
-        meta: { title: 'BaseManagement', icon: 'baseManagement' }
-      }
-    ]
-  },
-
-  {
-    path: '/peopleManagement',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        name: 'PeopleManagement',
-        component: () => import('@/views/peopleManagement/index'),
-        meta: { title: 'PeopleManagement', icon: 'peopleManagement', noCache: true }
-      }
-    ]
-  },
-
-  {
-    path: '/nested',
-    component: Layout,
-    redirect: '/nested/menu1',
-    name: 'Nested',
-    meta: {
-      title: 'Nested',
-      icon: 'nested'
-    },
-    children: [
-      {
-        path: 'menu1',
-        component: () => import('@/views/nested/menu1/index'), // Parent router-view
-        name: 'Menu1',
-        meta: { title: 'Menu1' },
-        children: [
-          {
-            path: 'menu1-1',
-            component: () => import('@/views/nested/menu1/menu1-1'),
-            name: 'Menu1-1',
-            meta: { title: 'Menu1-1' }
-          },
-          {
-            path: 'menu1-2',
-            component: () => import('@/views/nested/menu1/menu1-2'),
-            name: 'Menu1-2',
-            meta: { title: 'Menu1-2' },
-            children: [
-              {
-                path: 'menu1-2-1',
-                component: () => import('@/views/nested/menu1/menu1-2/menu1-2-1'),
-                name: 'Menu1-2-1',
-                meta: { title: 'Menu1-2-1' }
-              },
-              {
-                path: 'menu1-2-2',
-                component: () => import('@/views/nested/menu1/menu1-2/menu1-2-2'),
-                name: 'Menu1-2-2',
-                meta: { title: 'Menu1-2-2' }
-              }
-            ]
-          },
-          {
-            path: 'menu1-3',
-            component: () => import('@/views/nested/menu1/menu1-3'),
-            name: 'Menu1-3',
-            meta: { title: 'Menu1-3' }
-          }
-        ]
-      },
-      {
-        path: 'menu2',
-        component: () => import('@/views/nested/menu2/index'),
-        meta: { title: 'Menu2' }
-      }
-    ]
-  },
-
-  {
-    path: 'external-link',
-    component: Layout,
-    children: [
-      {
-        path: 'https://panjiachen.github.io/vue-element-admin-site/#/',
-        meta: { title: 'ExternalLink', icon: 'link' }
-      }
-    ]
-  },
-
-  { path: '*', redirect: '/404', hidden: true }
+    path: '*',
+    redirect: '/404',
+    hidden: true
+  }
 ]
 
 export default new Router({
   // mode: 'history', //后端支持可开
-  scrollBehavior: () => ({ y: 0 }),
+  scrollBehavior: () => ({
+    y: 0
+  }),
   routes: constantRouterMap
 })
