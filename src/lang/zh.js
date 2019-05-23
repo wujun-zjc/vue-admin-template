@@ -8,10 +8,10 @@ export default {
     Page401: '401',
     Page404: '404',
     PeopleManagement: '人员管理',
-    SystemManagement: '系统管理',
+    SystemManagement: '系统管理'
   },
   header: {
-    platformName: '山东青岛胶州湾养殖场',
+    platformName: '系统名',
     userName: '用户名',
     lang: '语言',
     alarm: '消息中心',
